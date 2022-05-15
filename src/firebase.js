@@ -1,7 +1,21 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut  } from "firebase/auth";
+import { initializeApp } from 'firebase/app'
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from 'firebase/firestore'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import {
+  getAuth,
+  onAuthStateChanged,
+  updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut
+} from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -10,13 +24,31 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGIN_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID
-};
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig)
 
-const db = getFirestore();
-const storage = getStorage(app);
-const auth = getAuth();
+const db = getFirestore()
+const storage = getStorage(app)
+const auth = getAuth()
+const provider = new GoogleAuthProvider()
 
-export { db, collection, addDoc, getDocs, query, where, storage, ref, getDownloadURL, uploadBytes, auth, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signInWithEmailAndPassword, signOut }
+export {
+  db,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  storage,
+  ref,
+  getDownloadURL,
+  uploadBytes,
+  auth,
+  onAuthStateChanged,
+  updateProfile,
+  signInWithPopup,
+  provider,
+  signOut
+}

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
 import { BsImages } from 'react-icons/bs';
+import { AuthContext } from '../context/AuthContext';
 import { db, collection, addDoc, storage, ref, uploadBytes, getDownloadURL } from '../firebase';
 
-import Register from './Register'
-
-function CreateMemorie({ user, setUser, username, setUsername }) {
+function CreateMemorie() {
   const [title, setTitle] = useState('')
   const [file, setFile] = useState('')
   const [date, setDate] = useState('')
+  const {user} = useContext(AuthContext)
 
   const handleChange = (e) => {
     if (e.target.files[0]) {
@@ -29,16 +29,18 @@ function CreateMemorie({ user, setUser, username, setUsername }) {
               title,
               image: urlImg,
               date,
-              username: user.displayName
+              username: user.name
+            }).then(data => {
+              console.log(data)
             })
+
+            
           })
       })
   }
 
   return (
-    <div className="mx-5 px-5 py-8 mb-10 bg-white rounded-lg shadow-lg">
-      {user?.displayName ? (
-        <>
+    <>
           <h1 className="text-2xl text-sky-500 font-bold mb-5">Crie uma memória</h1>
           <div className="w-full">
             <form action="">
@@ -70,10 +72,8 @@ function CreateMemorie({ user, setUser, username, setUsername }) {
               <button onClick={handleUpload} className="rounded-lg  outline-0 p-3 bg-sky-500 text-white">Criar memória</button>
             </form>
           </div>
-        </>
-      ) : (<Register user={user} setUser={setUser} username={username} setUsername={setUsername} />)}
 
-    </div >
+    </>
 
   );
 }

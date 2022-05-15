@@ -1,32 +1,40 @@
-import React, { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { db, collection, getDocs, query, where } from '../firebase';
 
-function MainContent({ user, setOpenMemorie, setUrl, }) {
+function MainContent({ setOpenMemorie, setUrl, }) {
   const [memories, setMemories] = useState([])
+  const {user} = useContext(AuthContext)
 
-  getMemories()
-  async function getMemories() {
-    const memorieArray = []
-    const q = query(collection(db, 'memories'), where('username', '==', user.displayName))
-    const results = await getDocs(q)
-    results.forEach(doc => {
-      memorieArray.push({ id: doc.id, memorie: doc.data() })
-    });
-    setMemories(memorieArray)
-  }
-  console.log(memories)
+  useEffect(() => {
+    getMemories()
+    async function getMemories() {
+      if(user !== null) {
+        let memorieArray = []
+        const q = query(collection(db, 'memories'), where('username', '==', user.name))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+
+            memorieArray.push({ id: doc.id, ...doc.data() })
+          });
+        setMemories(memorieArray)
+      }
+    }
+  }, [user])
+ 
+
 
   return (
     <div className="px-10 py-8 mx-5 mb-10 bg-white rounded-lg shadow-lg">
       <h1 className="text-2xl text-sky-500 font-bold mb-5">Suas memórias</h1>
-      {user?.displayName ? (
+      {user ? (
         <div className="grid grid-cols-6 gap-3">
           {memories?.map((memorie) => (
-            <div key={memorie.id} onClick={() => { setOpenMemorie(true); setUrl(memorie.memorie.image) }} className="col-span-3 p-3 rounded-lg shadow-md mx-2 border cursor-pointer">
-              <img className="rounded-lg w-full" src={memorie.memorie.image} alt="foto" />
+            <div key={memorie.id} onClick={() => { setOpenMemorie(true); setUrl(memorie.image) }} className="col-span-3 p-3 rounded-lg shadow-md mx-2 border cursor-pointer">
+              <img className="rounded-lg w-full" src={memorie.image} alt="foto" />
               <div className="mt-3 text-center">
-                <h2 className="text-xl font-semibold text-gray-600">{memorie.memorie.title}</h2>
-                <p className="text-md text-gray-500">{memorie.memorie.date}</p>
+                <h2 className="text-xl font-semibold text-gray-600">{memorie.title}</h2>
+                <p className="text-md text-gray-500">{memorie.date}</p>
               </div>
             </div>
           ))}
